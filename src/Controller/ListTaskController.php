@@ -127,7 +127,7 @@ class ListTaskController extends Controller
         ));
     }
     
-    public function markItem()
+    public function markItem( ListTask $task)
     {
     
     }

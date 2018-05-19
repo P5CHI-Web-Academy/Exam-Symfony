@@ -19,7 +19,7 @@
         <tbody>
         {% for list_task in list_tasks_sort %}
             <tr>
-                <td> {{ list_task.done ? '<button type="button" class="btn btn-outline-primary"><i class="fas fa-check"></i></button>' : '<button type="button" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>' }}</td>
+                <td>{{ list_task.done ? '<button type="button" class="btn btn-outline-primary"><i class="fas fa-check"></i></button>' : '<button type="button" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>' }}</td>
                 <td>{{ list_task.title }}</td>
                 <td align="right">
                     <a class="btn btn-outline-primary" href="{{ path('list_task_edit', {'id': list_task.id}) }}"><i class="fas fa-pencil-alt"></i></a>
