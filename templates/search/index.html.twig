@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+
+        {% for task in tasks %}
+            <div class="media text-muted pt-3 pb-3 border-bottom border-gray" style="display: flex; align-items: center">
+                <form action="">
+                    <input type="checkbox" {% if task.getIsCompleted == 1 %} {{ 'checked' }} {% endif %}>
+                </form>
+                <p>{{ task.getPriority }}</p>
+                <p class="media-body pb-3 mb-0 small lh-125 ml-5 mr-5">
+                    {{ task.getTask }}
+                </p>
+
+                <div style="display: flex;">
+                    <a href="{{ path('tasks.edit', {'id': task.id}) }}" class="btn">Edit</a>
+
+                    <form method="post" action="{{ path('tasks.delete', {'task': task.getId()}) }}">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
