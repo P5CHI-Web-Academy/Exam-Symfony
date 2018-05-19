@@ -18,4 +18,39 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    /**
+     * @return Task[]
+     */
+    public function findActiveTasks()
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $this->applyActiveCondition($qb);
+
+        return $qb->orderBy('t.priority', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return AbstractQuery
+     */
+    public function getActiveTasksQuery(): AbstractQuery
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $this->applyActiveCondition($qb);
+
+        return $qb->orderBy('t.priority', 'DESC')->getQuery();
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     */
+    protected function applyActiveCondition(QueryBuilder $builder): void
+    {
+        $builder
+            ->andWhere('t.active = :active')
+            ->setParameter('active', true);
+    }
 }

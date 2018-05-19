@@ -80,6 +80,15 @@ class Task
     private $doneAt;
 
     /**
+     * Task constructor.
+     */
+    public function __construct()
+    {
+        $this->active = true;
+        $this->done = false;
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -236,5 +245,17 @@ class Task
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPriorityList()
+    {
+        return [
+            self::HIGH => 'High',
+            self::NORMAL => 'Normal',
+            self::LOW => 'Low',
+        ];
     }
 }

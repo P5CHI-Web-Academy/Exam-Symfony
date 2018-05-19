@@ -1,0 +1,18 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Done</th>
+        <th>Task</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for task in tasks %}
+        <tr>
+            <td scope="row">{{ task.done }}</td>
+            <td>{{ task.task }}</td>
+            <td></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
