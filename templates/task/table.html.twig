@@ -1,3 +1,4 @@
+{% import _self as macros %}
 <table class="table table-striped">
     <thead>
     <tr>
@@ -9,10 +10,42 @@
     <tbody>
     {% for task in tasks %}
         <tr>
-            <td scope="row">{{ task.done }}</td>
+            <td scope="row">{{ macros.renderToggle(taskDoneForm, task) }}</td>
             <td>{{ task.task }}</td>
-            <td></td>
+            <td>
+                <a href="{{ path('app.task.update',{'id': task.id}) }}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true">
+                    </span>
+                </a>
+                {{ macros.renderDelete(deleteForm, task) }}
+            </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
+{% macro renderDelete(form, task) %}
+    {{ form_start(form, {'action': path('app.task.delete',{'id': task.id})}) }}
+    {{ form_widget(form) }}
+
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    </button>
+    {{ form_end(form) }}
+{% endmacro %}
+
+{% macro renderToggle(form, task) %}
+    {{ form_start(form, {'action': path('app.task.toggle', {'id': task.id})}) }}
+    {{ form_widget(form) }}
+
+    {% set buttonIcon = 'glyphicon glyphicon-unchecked' %}
+
+    {% if task.done %}
+        {% set buttonIcon = 'glyphicon glyphicon-check' %}
+    {% endif %}
+
+    <button type="submit" class="btn btn-submit">
+        <span class="{{ buttonIcon }}" aria-hidden="true"></span>
+    </button>
+    {{ form_end(form) }}
+{% endmacro %}

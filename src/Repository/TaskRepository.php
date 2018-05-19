@@ -19,6 +19,23 @@ class TaskRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $taskText
+     * @return Task[]
+     */
+    public function findActiveTasksByTaskText(string $taskText)
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $this->applyActiveCondition($qb);
+        $qb->andWhere('t.task LIKE :taskText')
+            ->setParameter('taskText', '%'.$taskText.'%');
+
+        return $qb->orderBy('t.priority', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Task[]
      */
     public function findActiveTasks()

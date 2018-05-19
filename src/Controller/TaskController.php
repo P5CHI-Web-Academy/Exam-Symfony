@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +43,11 @@ class TaskController extends Controller
 
         return $this->render(
             'task/list.html.twig',
-            ['activeTasks' => $activeTasks]
+            [
+                'activeTasks' => $activeTasks,
+                'deleteForm' => $this->createDeleteForm()->createView(),
+                'taskDoneForm' => $this->createPostForm()->createView(),
+            ]
         );
     }
 
@@ -104,4 +110,86 @@ class TaskController extends Controller
             ]
         );
     }
+
+    /**
+     * @Route("/{id}/delete", name="task.delete", requirements={"id"="\d+"})
+     * @Method("DELETE")
+     *
+     * @param Request $request
+     * @param Task $task
+     * @param EntityManagerInterface $em
+     *
+     * @return Response
+     */
+    public function delete(Task $task, Request $request, EntityManagerInterface $em): Response
+    {
+        $task->setActive(false);
+        $this->addFlash('notice', 'Task has been deleted');
+
+        return $this->redirectToRoute('app.task.list');
+    }
+
+    /**
+     * @Route("/{id}/toggle", name="task.toggle", requirements={"id"="\d+"})
+     * @Method("POST")
+     *
+     * @param Request $request
+     * @param Task $task
+     * @param EntityManagerInterface $em
+     *
+     * @return Response
+     */
+    public function toggle(Task $task, Request $request, EntityManagerInterface $em): Response
+    {
+        $task->setDone(!$task->isDone());
+        $em->flush();
+
+        return $this->redirectToRoute('app.task.list');
+    }
+
+    /**
+     * @Route("/search", name="task.search")
+     * @Method("GET")
+     *
+     * @param TaskRepository $taskRepository
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function search(TaskRepository $taskRepository, Request $request): Response
+    {
+        $searchedWord = $request->get('search', '');
+
+        $activeTasks = $taskRepository->findActiveTasksByTaskText($searchedWord);
+
+        return $this->render(
+            'task/search.html.twig',
+            [
+                'activeTasks' => $activeTasks,
+                'deleteForm' => $this->createDeleteForm()->createView(),
+                'taskDoneForm' => $this->createPostForm()->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @return FormInterface
+     */
+    private function createDeleteForm(): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setMethod('DELETE')
+            ->getForm();
+    }
+
+    /**
+     * @return FormInterface
+     */
+    private function createPostForm(): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setMethod('POST')
+            ->getForm();
+    }
+
 }

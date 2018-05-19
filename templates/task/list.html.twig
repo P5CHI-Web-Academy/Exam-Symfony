@@ -5,7 +5,9 @@
 {% block body %}
 
     {% include 'task/table.html.twig' with {
-        'tasks': activeTasks
+        'tasks': activeTasks,
+        'deleteForm': deleteForm,
+        'taskDoneForm': taskDoneForm
     } only %}
 
     <div class="navigation text-center">
