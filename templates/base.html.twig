@@ -2,17 +2,21 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}To-Do management{% endblock %}</title>
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.min.css">
 
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">Jobeet</a>
-            <a href="{{ url('job.create') }}" class="btn btn-light ml-auto">Create Job</a>
+            <a class="navbar-brand" href="/">My To-Do List</a>
+            <div class="ml-auto">
+                <a href="{{ url('item.create') }}" class="btn btn-light">Create New</a>
+                <a href="{{ url('item.list') }}" class="btn btn-light">Import</a>
+            </div>
         </nav>
 
         <div class="container mt-3 mb-4">
