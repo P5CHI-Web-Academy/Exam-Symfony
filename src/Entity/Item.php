@@ -51,6 +51,19 @@ class Item{
      */
     private $priority;
 
+    public function __construct()
+    {
+        $this->done = false;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
     /**
      * @param DateTime $createdAt
      * @return Item
@@ -82,6 +95,14 @@ class Item{
     }
 
     /**
+     * @return Priority|null
+     */
+    public function getPriority(): ?Priority
+    {
+        return $this->priority;
+    }
+
+    /**
      * @ORM\PrePersist()
      */
     public function prePersist(): void
@@ -109,9 +130,9 @@ class Item{
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNote(): string
+    public function getNote(): ?string
     {
         return $this->note;
     }
@@ -128,9 +149,9 @@ class Item{
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isDone(): bool
+    public function isDone(): ?bool
     {
         return $this->done;
     }
