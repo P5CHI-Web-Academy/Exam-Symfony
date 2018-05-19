@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-9">
+            <h1 class="mt-4">{{ task.name }}</h1>
+
+            <hr>
+
+            <p class="lead">{{ task.description }}</p>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card my-5">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Priority: {{ task.priority }}</li>
+                    <li class="list-group-item">Created: {{ task.createdAt.format('d-m-Y H:i') }}</a></li>
+                    <li class="list-group-item">
+                        <form class="form-inline" method="post" action="{{ path('task_delete', {'id': task.id}) }}" onsubmit="return confirm('{{ 'delete_confirmation'|trans }}');">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                            <a class="btn " href="{{ path('task_edit', {'id': task.id}) }}">
+                                <i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit
+                            </a>
+                            <button class="btn "><i class="far fa-trash-alt" aria-hidden="true"></i> Delete</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
