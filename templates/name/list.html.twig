@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <table class="table text-left">
+
+
+        {% for name in names %}
+            <tr>
+                <td>
+                    <a href="#">
+                        {{ name.name }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
