@@ -106,6 +106,11 @@ $catalogue = new MessageCatalogue('hu', array (
     'Account is disabled.' => 'Felfüggesztett fiók.',
     'Account is locked.' => 'Zárolt fiók.',
   ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Előző',
+    'label_next' => 'Következő',
+  ),
 ));
 
 $catalogueEn = new MessageCatalogue('en', array (
@@ -211,6 +216,11 @@ $catalogueEn = new MessageCatalogue('en', array (
     'Credentials have expired.' => 'Credentials have expired.',
     'Account is disabled.' => 'Account is disabled.',
     'Account is locked.' => 'Account is locked.',
+  ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Previous',
+    'label_next' => 'Next',
   ),
 ));
 $catalogue->addFallbackCatalogue($catalogueEn);

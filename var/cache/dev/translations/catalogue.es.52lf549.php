@@ -106,6 +106,11 @@ $catalogue = new MessageCatalogue('es', array (
     'Account is disabled.' => 'La cuenta está deshabilitada.',
     'Account is locked.' => 'La cuenta está bloqueada.',
   ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Anterior',
+    'label_next' => 'Siguiente',
+  ),
 ));
 
 $catalogueEn = new MessageCatalogue('en', array (
@@ -211,6 +216,11 @@ $catalogueEn = new MessageCatalogue('en', array (
     'Credentials have expired.' => 'Credentials have expired.',
     'Account is disabled.' => 'Account is disabled.',
     'Account is locked.' => 'Account is locked.',
+  ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Previous',
+    'label_next' => 'Next',
   ),
 ));
 $catalogue->addFallbackCatalogue($catalogueEn);

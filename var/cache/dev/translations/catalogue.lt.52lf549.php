@@ -103,6 +103,11 @@ $catalogue = new MessageCatalogue('lt', array (
     'Account is disabled.' => 'Paskyra yra išjungta.',
     'Account is locked.' => 'Paskyra yra užblokuota.',
   ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Ankstesnis',
+    'label_next' => 'Sekantis',
+  ),
 ));
 
 $catalogueEn = new MessageCatalogue('en', array (
@@ -208,6 +213,11 @@ $catalogueEn = new MessageCatalogue('en', array (
     'Credentials have expired.' => 'Credentials have expired.',
     'Account is disabled.' => 'Account is disabled.',
     'Account is locked.' => 'Account is locked.',
+  ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Previous',
+    'label_next' => 'Next',
   ),
 ));
 $catalogue->addFallbackCatalogue($catalogueEn);

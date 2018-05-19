@@ -79,6 +79,11 @@ $catalogue = new MessageCatalogue('uk', array (
     'The uploaded file was too large. Please try to upload a smaller file.' => 'Завантажений файл занадто великий. Будь-ласка, спробуйте завантажити файл меншого розміру.',
     'The CSRF token is invalid. Please try to resubmit the form.' => 'CSRF значення недопустиме. Будь-ласка, спробуйте відправити форму знову.',
   ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Назад',
+    'label_next' => 'Далі',
+  ),
 ));
 
 $catalogueEn = new MessageCatalogue('en', array (
@@ -184,6 +189,11 @@ $catalogueEn = new MessageCatalogue('en', array (
     'Credentials have expired.' => 'Credentials have expired.',
     'Account is disabled.' => 'Account is disabled.',
     'Account is locked.' => 'Account is locked.',
+  ),
+  'KnpPaginatorBundle' => 
+  array (
+    'label_previous' => 'Previous',
+    'label_next' => 'Next',
   ),
 ));
 $catalogue->addFallbackCatalogue($catalogueEn);

@@ -28,22 +28,70 @@ class srcDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             $canonicalMethod = 'GET';
         }
 
-        // app_list_hello
-        if ('/list' === $trimmedPathinfo) {
-            $ret = array (  '_controller' => 'App\\Controller\\ListController::helloAction',  '_route' => 'app_list_hello',);
-            if ('/' === substr($pathinfo, -1)) {
-                // no-op
-            } elseif ('GET' !== $canonicalMethod) {
-                goto not_app_list_hello;
-            } else {
-                return array_replace($ret, $this->redirect($rawPathinfo.'/', 'app_list_hello'));
+        if (0 === strpos($pathinfo, '/list/task')) {
+            // list_task_index
+            if (preg_match('#^/list/task(?:/(?P<page>\\d+))?$#sD', $pathinfo, $matches)) {
+                $ret = $this->mergeDefaults(array_replace($matches, array('_route' => 'list_task_index')), array (  'page' => 1,  '_controller' => 'App\\Controller\\ListTaskController::index',));
+                if (!in_array($canonicalMethod, array('GET'))) {
+                    $allow = array_merge($allow, array('GET'));
+                    goto not_list_task_index;
+                }
+
+                return $ret;
             }
+            not_list_task_index:
 
-            return $ret;
+            // list_task_new
+            if ('/list/task/new' === $pathinfo) {
+                $ret = array (  '_controller' => 'App\\Controller\\ListTaskController::new',  '_route' => 'list_task_new',);
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_list_task_new;
+                }
+
+                return $ret;
+            }
+            not_list_task_new:
+
+            // list_task_edit
+            if (preg_match('#^/list/task/(?P<id>[^/]++)/edit$#sD', $pathinfo, $matches)) {
+                $ret = $this->mergeDefaults(array_replace($matches, array('_route' => 'list_task_edit')), array (  '_controller' => 'App\\Controller\\ListTaskController::edit',));
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_list_task_edit;
+                }
+
+                return $ret;
+            }
+            not_list_task_edit:
+
+            // list_task_delete
+            if (preg_match('#^/list/task/(?P<id>[^/]++)/delete$#sD', $pathinfo, $matches)) {
+                $ret = $this->mergeDefaults(array_replace($matches, array('_route' => 'list_task_delete')), array (  '_controller' => 'App\\Controller\\ListTaskController::delete',));
+                if (!in_array($canonicalMethod, array('GET'))) {
+                    $allow = array_merge($allow, array('GET'));
+                    goto not_list_task_delete;
+                }
+
+                return $ret;
+            }
+            not_list_task_delete:
+
+            // list_task_import
+            if ('/list/task/import' === $pathinfo) {
+                $ret = array (  '_controller' => 'App\\Controller\\ListTaskController::import',  '_route' => 'list_task_import',);
+                if (!in_array($canonicalMethod, array('GET', 'POST'))) {
+                    $allow = array_merge($allow, array('GET', 'POST'));
+                    goto not_list_task_import;
+                }
+
+                return $ret;
+            }
+            not_list_task_import:
+
         }
-        not_app_list_hello:
 
-        if (0 === strpos($pathinfo, '/_')) {
+        elseif (0 === strpos($pathinfo, '/_')) {
             // _twig_error_test
             if (0 === strpos($pathinfo, '/_error') && preg_match('#^/_error/(?P<code>\\d+)(?:\\.(?P<_format>[^/]++))?$#sD', $pathinfo, $matches)) {
                 return $this->mergeDefaults(array_replace($matches, array('_route' => '_twig_error_test')), array (  '_controller' => 'twig.controller.preview_error:previewErrorPageAction',  '_format' => 'html',));

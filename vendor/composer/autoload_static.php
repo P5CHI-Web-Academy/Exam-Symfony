@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit2071290e2892c76022316e133a3a30d4
+class ComposerStaticInit7f98ee880e2ef58e460caa3af38616a5
 {
     public static $files = array (
         '92c8763cd6170fce6fcfe7e26b4e8c10' => __DIR__ . '/..' . '/symfony/phpunit-bridge/bootstrap.php',
@@ -98,9 +98,14 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
         array (
             'Monolog\\' => 8,
         ),
+        'K' => 
+        array (
+            'Knp\\Bundle\\PaginatorBundle\\' => 27,
+        ),
         'F' => 
         array (
             'Fig\\Link\\' => 9,
+            'Faker\\' => 6,
         ),
         'E' => 
         array (
@@ -113,10 +118,12 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\DBAL\\Migrations\\' => 25,
             'Doctrine\\Common\\Inflector\\' => 26,
+            'Doctrine\\Common\\DataFixtures\\' => 29,
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\Annotations\\' => 28,
             'Doctrine\\Common\\' => 16,
             'Doctrine\\Bundle\\MigrationsBundle\\' => 33,
+            'Doctrine\\Bundle\\FixturesBundle\\' => 31,
             'Doctrine\\Bundle\\DoctrineCacheBundle\\' => 36,
             'Doctrine\\Bundle\\DoctrineBundle\\' => 31,
         ),
@@ -374,9 +381,17 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Knp\\Bundle\\PaginatorBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/knplabs/knp-paginator-bundle',
+        ),
         'Fig\\Link\\' => 
         array (
             0 => __DIR__ . '/..' . '/fig/link-util/src',
+        ),
+        'Faker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
         'Egulias\\EmailValidator\\' => 
         array (
@@ -402,6 +417,10 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
         ),
+        'Doctrine\\Common\\DataFixtures\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/data-fixtures/lib/Doctrine/Common/DataFixtures',
+        ),
         'Doctrine\\Common\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
@@ -417,6 +436,10 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
         'Doctrine\\Bundle\\MigrationsBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/doctrine-migrations-bundle',
+        ),
+        'Doctrine\\Bundle\\FixturesBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/doctrine-fixtures-bundle',
         ),
         'Doctrine\\Bundle\\DoctrineCacheBundle\\' => 
         array (
@@ -451,6 +474,13 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
                 0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
             ),
         ),
+        'K' => 
+        array (
+            'Knp\\Component' => 
+            array (
+                0 => __DIR__ . '/..' . '/knplabs/knp-components/src',
+            ),
+        ),
         'D' => 
         array (
             'Doctrine\\DBAL\\' => 
@@ -479,10 +509,10 @@ class ComposerStaticInit2071290e2892c76022316e133a3a30d4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit2071290e2892c76022316e133a3a30d4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit2071290e2892c76022316e133a3a30d4::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit2071290e2892c76022316e133a3a30d4::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit2071290e2892c76022316e133a3a30d4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7f98ee880e2ef58e460caa3af38616a5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7f98ee880e2ef58e460caa3af38616a5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7f98ee880e2ef58e460caa3af38616a5::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit7f98ee880e2ef58e460caa3af38616a5::$classMap;
 
         }, null, ClassLoader::class);
     }

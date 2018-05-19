@@ -21,6 +21,8 @@
       <parameter key="DebugBundle">Symfony\Bundle\DebugBundle\DebugBundle</parameter>
       <parameter key="SensioFrameworkExtraBundle">Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle</parameter>
       <parameter key="MakerBundle">Symfony\Bundle\MakerBundle\MakerBundle</parameter>
+      <parameter key="DoctrineFixturesBundle">Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle</parameter>
+      <parameter key="KnpPaginatorBundle">Knp\Bundle\PaginatorBundle\KnpPaginatorBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
@@ -71,6 +73,14 @@
         <parameter key="path">/application/vendor/symfony/maker-bundle/src</parameter>
         <parameter key="namespace">Symfony\Bundle\MakerBundle</parameter>
       </parameter>
+      <parameter key="DoctrineFixturesBundle" type="collection">
+        <parameter key="path">/application/vendor/doctrine/doctrine-fixtures-bundle</parameter>
+        <parameter key="namespace">Doctrine\Bundle\FixturesBundle</parameter>
+      </parameter>
+      <parameter key="KnpPaginatorBundle" type="collection">
+        <parameter key="path">/application/vendor/knplabs/knp-paginator-bundle</parameter>
+        <parameter key="namespace">Knp\Bundle\PaginatorBundle</parameter>
+      </parameter>
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">srcDevDebugProjectContainer</parameter>
@@ -78,6 +88,7 @@
     <parameter key="container.dumper.inline_class_loader">true</parameter>
     <parameter key="env(DATABASE_URL)"></parameter>
     <parameter key="locale">en</parameter>
+    <parameter key="max_list">10</parameter>
     <parameter key="fragment.renderer.hinclude.global_template"></parameter>
     <parameter key="fragment.path">/_fragment</parameter>
     <parameter key="kernel.secret">%env(APP_SECRET)%</parameter>
@@ -276,8 +287,15 @@
     <parameter key="twig.exception_listener.controller">twig.controller.exception:showAction</parameter>
     <parameter key="twig.form.resources" type="collection">
       <parameter>form_div_layout.html.twig</parameter>
+      <parameter>bootstrap_4_layout.html.twig</parameter>
     </parameter>
     <parameter key="twig.default_path">/application/templates</parameter>
+    <parameter key="knp_paginator.class">Knp\Component\Pager\Paginator</parameter>
+    <parameter key="knp_paginator.helper.processor.class">Knp\Bundle\PaginatorBundle\Helper\Processor</parameter>
+    <parameter key="knp_paginator.template.pagination">@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig</parameter>
+    <parameter key="knp_paginator.template.filtration">@KnpPaginator/Pagination/filtration.html.twig</parameter>
+    <parameter key="knp_paginator.template.sortable">@KnpPaginator/Pagination/sortable_link.html.twig</parameter>
+    <parameter key="knp_paginator.page_range">5</parameter>
     <parameter key="data_collector.templates" type="collection">
       <parameter key="data_collector.request" type="collection">
         <parameter>request</parameter>
@@ -371,8 +389,18 @@
     <service id="EasyCorp\EasyLog\EasyLogHandler" class="EasyCorp\EasyLog\EasyLogHandler" public="false">
       <argument>/application/var/log/dev.log</argument>
     </service>
-    <service id="App\Controller\ListController" class="App\Controller\ListController" public="true" autowire="true" autoconfigure="true">
+    <service id="App\Controller\ListTaskController" class="App\Controller\ListTaskController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
+    </service>
+    <service id="App\DataFixtures\ListTaskFixtures" class="App\DataFixtures\ListTaskFixtures" public="false" autowire="true" autoconfigure="true">
+      <tag name="doctrine.fixture.orm"/>
+    </service>
+    <service id="App\Form\ListTaskType" class="App\Form\ListTaskType" public="false" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Repository\ListTaskRepository" class="App\Repository\ListTaskRepository" public="false" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
     </service>
     <service id="controller_name_converter" class="Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser" public="false">
       <tag name="monolog.logger" channel="request"/>
@@ -390,7 +418,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.v5YYcZp"/>
+      <argument type="service" id="service_locator.iHDiA5p"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -629,9 +657,11 @@
       <argument type="service" id="form.registry"/>
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type</argument>
+        <argument>App\Form</argument>
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>App\Form\ListTaskType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\ChoiceType</argument>
         <argument>Symfony\Bridge\Doctrine\Form\Type\EntityType</argument>
@@ -837,7 +867,7 @@
       <argument type="service" id="form.resolved_type_factory"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension" public="false">
-      <argument type="service" id="service_locator.nA6cUNd"/>
+      <argument type="service" id="service_locator.ii_Jt3B"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.http_foundation"/>
@@ -1051,6 +1081,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.ar.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.ar.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.ar.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ar.xliff</argument>
           </argument>
           <argument key="az" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.az.xlf</argument>
@@ -1079,11 +1110,13 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.da.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.da.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.da.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.da.xliff</argument>
           </argument>
           <argument key="de" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.de.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.de.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.de.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.de.xliff</argument>
           </argument>
           <argument key="el" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.el.xlf</argument>
@@ -1094,11 +1127,13 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.en.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.en.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.en.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.en.xliff</argument>
           </argument>
           <argument key="es" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.es.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.es.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.es.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.es.xliff</argument>
           </argument>
           <argument key="et" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.et.xlf</argument>
@@ -1112,6 +1147,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.fa.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.fa.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.fa.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fa.xliff</argument>
           </argument>
           <argument key="fi" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.fi.xlf</argument>
@@ -1121,6 +1157,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.fr.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.fr.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.fr.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fr.xliff</argument>
           </argument>
           <argument key="gl" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.gl.xlf</argument>
@@ -1141,6 +1178,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.hu.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.hu.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.hu.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.hu.xliff</argument>
           </argument>
           <argument key="hy" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.hy.xlf</argument>
@@ -1150,11 +1188,13 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.id.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.id.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.id.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.id.xliff</argument>
           </argument>
           <argument key="it" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.it.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.it.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.it.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.it.xliff</argument>
           </argument>
           <argument key="ja" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.ja.xlf</argument>
@@ -1170,6 +1210,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.lt.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.lt.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.lt.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.lt.xliff</argument>
           </argument>
           <argument key="lv" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.lv.xlf</argument>
@@ -1189,6 +1230,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.nl.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.nl.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.nl.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.nl.xliff</argument>
           </argument>
           <argument key="nn" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.nn.xlf</argument>
@@ -1204,6 +1246,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.pl.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.pl.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.pl.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pl.xliff</argument>
           </argument>
           <argument key="pt" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.pt.xlf</argument>
@@ -1213,16 +1256,19 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.pt_BR.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.pt_BR.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.pt_BR.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pt_BR.xliff</argument>
           </argument>
           <argument key="ro" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.ro.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.ro.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.ro.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ro.xliff</argument>
           </argument>
           <argument key="ru" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.ru.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.ru.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.ru.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ru.xliff</argument>
           </argument>
           <argument key="sk" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.sk.xlf</argument>
@@ -1251,6 +1297,7 @@
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.sv.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.sv.xlf</argument>
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.sv.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.sv.xliff</argument>
           </argument>
           <argument key="th" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.th.xlf</argument>
@@ -1268,6 +1315,7 @@
           <argument key="uk" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.uk.xlf</argument>
             <argument>/application/vendor/symfony/form/Resources/translations/validators.uk.xlf</argument>
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.uk.xliff</argument>
           </argument>
           <argument key="vi" type="collection">
             <argument>/application/vendor/symfony/validator/Resources/translations/validators.vi.xlf</argument>
@@ -1286,6 +1334,12 @@
           </argument>
           <argument key="ua" type="collection">
             <argument>/application/vendor/symfony/security/Core/Resources/translations/security.ua.xlf</argument>
+          </argument>
+          <argument key="ky" type="collection">
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ky.xliff</argument>
+          </argument>
+          <argument key="sw" type="collection">
+            <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.sw.xliff</argument>
           </argument>
         </argument>
       </argument>
@@ -1724,6 +1778,14 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.request</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sliding_pagination"/>
+          <argument>onKernelRequest</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument type="service" id="response_listener"/>
@@ -2074,6 +2136,46 @@
           <argument>onConsoleTerminate</argument>
         </argument>
         <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.paginate"/>
+          <argument>before</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.pagination</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.paginate"/>
+          <argument>pagination</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sortable"/>
+          <argument>before</argument>
+        </argument>
+        <argument>1</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.filtration"/>
+          <argument>before</argument>
+        </argument>
+        <argument>1</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.pagination</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sliding_pagination"/>
+          <argument>pagination</argument>
+        </argument>
+        <argument>1</argument>
       </call>
     </service>
     <service id="debug.controller_resolver" class="Symfony\Component\HttpKernel\Controller\TraceableControllerResolver" public="false">
@@ -3183,7 +3285,7 @@
       <factory class="Doctrine\ORM\EntityManager" method="create"/>
     </service>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory" public="false">
-      <argument type="service" id="service_locator.v5YYcZp"/>
+      <argument type="service" id="service_locator.cUlm9.s"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -3481,10 +3583,11 @@
         </argument>
         <argument key="debug">true</argument>
         <argument key="strict_variables">true</argument>
-        <argument key="exception_controller">twig.controller.exception:showAction</argument>
         <argument key="form_themes" type="collection">
           <argument>form_div_layout.html.twig</argument>
+          <argument>bootstrap_4_layout.html.twig</argument>
         </argument>
+        <argument key="exception_controller">twig.controller.exception:showAction</argument>
         <argument key="autoescape">name</argument>
         <argument key="cache">/application/var/cache/dev/twig</argument>
         <argument key="charset">UTF-8</argument>
@@ -3551,12 +3654,19 @@
       <call method="addExtension">
         <argument type="service" id="twig.extension.webprofiler"/>
       </call>
+      <call method="addExtension">
+        <argument type="service" id="knp_paginator.twig.extension.pagination"/>
+      </call>
       <call method="addGlobal">
         <argument>app</argument>
         <argument type="service" id="twig.app_variable"/>
       </call>
       <call method="addRuntimeLoader">
         <argument type="service" id="twig.runtime_loader"/>
+      </call>
+      <call method="addGlobal">
+        <argument>max_list</argument>
+        <argument>10</argument>
       </call>
       <configurator service="twig.configurator.environment" method="configure"/>
     </service>
@@ -3662,6 +3772,14 @@
       <call method="addPath">
         <argument>/application/vendor/symfony/debug-bundle/Resources/views</argument>
         <argument>!Debug</argument>
+      </call>
+      <call method="addPath">
+        <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/views</argument>
+        <argument>KnpPaginator</argument>
+      </call>
+      <call method="addPath">
+        <argument>/application/vendor/knplabs/knp-paginator-bundle/Resources/views</argument>
+        <argument>!KnpPaginator</argument>
       </call>
       <call method="addPath">
         <argument>/application/templates</argument>
@@ -3996,8 +4114,70 @@
       <tag name="maker.command"/>
       <argument>/application</argument>
     </service>
-    <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.App\Controller\ListController" class="App\Controller\ListController" public="false" autowire="true" abstract="true"/>
-    <service id="abstract.instanceof.App\Controller\ListController" class="App\Controller\ListController" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="doctrine.fixtures_load_command" class="Doctrine\Bundle\FixturesBundle\Command\LoadDataFixturesDoctrineCommand">
+      <tag name="console.command" command="doctrine:fixtures:load"/>
+      <argument type="service" id="doctrine.fixtures.loader"/>
+      <call method="setName">
+        <argument>doctrine:fixtures:load</argument>
+      </call>
+    </service>
+    <service id="doctrine.fixtures.loader" class="Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader" public="false">
+      <argument type="service" id="service_container"/>
+      <call method="addFixtures">
+        <argument type="collection">
+          <argument type="service" id="App\DataFixtures\ListTaskFixtures"/>
+        </argument>
+      </call>
+    </service>
+    <service id="knp_paginator" class="Knp\Component\Pager\Paginator" public="true" lazy="true">
+      <argument type="service" id="debug.event_dispatcher"/>
+      <call method="setDefaultPaginatorOptions">
+        <argument type="collection">
+          <argument key="pageParameterName">page</argument>
+          <argument key="sortFieldParameterName">sort</argument>
+          <argument key="sortDirectionParameterName">direction</argument>
+          <argument key="filterFieldParameterName">filterField</argument>
+          <argument key="filterValueParameterName">filterValue</argument>
+          <argument key="distinct">true</argument>
+        </argument>
+      </call>
+    </service>
+    <service id="knp_paginator.subscriber.paginate" class="Knp\Component\Pager\Event\Subscriber\Paginate\PaginationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.sortable" class="Knp\Component\Pager\Event\Subscriber\Sortable\SortableSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.filtration" class="Knp\Component\Pager\Event\Subscriber\Filtration\FiltrationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.sliding_pagination" class="Knp\Bundle\PaginatorBundle\Subscriber\SlidingPaginationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+      <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest"/>
+      <tag name="container.hot_path"/>
+      <argument type="collection">
+        <argument key="defaultPaginationTemplate">@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig</argument>
+        <argument key="defaultSortableTemplate">@KnpPaginator/Pagination/sortable_link.html.twig</argument>
+        <argument key="defaultFiltrationTemplate">@KnpPaginator/Pagination/filtration.html.twig</argument>
+        <argument key="defaultPageRange">5</argument>
+      </argument>
+    </service>
+    <service id="knp_paginator.helper.processor" class="Knp\Bundle\PaginatorBundle\Helper\Processor">
+      <argument type="service" id="router.default"/>
+      <argument type="service" id="translator.data_collector"/>
+    </service>
+    <service id="knp_paginator.twig.extension.pagination" class="Knp\Bundle\PaginatorBundle\Twig\Extension\PaginationExtension">
+      <tag name="twig.extension"/>
+      <argument type="service" id="knp_paginator.helper.processor"/>
+    </service>
+    <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.App\Controller\ListTaskController" class="App\Controller\ListTaskController" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\Controller\ListTaskController" class="App\Controller\ListTaskController" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\ListTaskFixtures" class="App\DataFixtures\ListTaskFixtures" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\DataFixtures\ListTaskFixtures" class="App\DataFixtures\ListTaskFixtures" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ListTaskType" class="App\Form\ListTaskType" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\Form\ListTaskType" class="App\Form\ListTaskType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ListTaskRepository" class="App\Repository\ListTaskRepository" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\Repository\ListTaskRepository" class="App\Repository\ListTaskRepository" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="maker.auto_command.make_auth" class="Symfony\Bundle\MakerBundle\Command\MakerCommand" public="false">
       <tag name="console.command" command="make:auth"/>
       <argument type="service" id="maker.maker.make_authenticator"/>
@@ -4133,12 +4313,25 @@
         <argument>make:migration</argument>
       </call>
     </service>
-    <service id="service_locator.v5YYcZp" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.kStLdXj" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="paginator" type="service" id="knp_paginator" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id="service_locator.IHzsKby" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
+    <service id="service_locator.iHDiA5p" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="App\Controller\ListTaskController:index" type="service" id="service_locator.kStLdXj"/>
+        <argument key="App\Controller\ListTaskController::index" type="service" id="service_locator.kStLdXj"/>
+      </argument>
+    </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
-      <argument type="service" id="service_locator.ohqmJ6T"/>
+      <argument type="service" id="service_locator.02akXIo"/>
       <argument type="collection">
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
@@ -4184,6 +4377,7 @@
         <argument key="doctrine:schema:validate">doctrine.schema_validate_command</argument>
         <argument key="debug:twig">twig.command.debug</argument>
         <argument key="lint:twig">twig.command.lint</argument>
+        <argument key="doctrine:fixtures:load">doctrine.fixtures_load_command</argument>
         <argument key="make:auth">maker.auto_command.make_auth</argument>
         <argument key="make:command">maker.auto_command.make_command</argument>
         <argument key="make:controller">maker.auto_command.make_controller</argument>
@@ -4201,7 +4395,7 @@
         <argument key="make:migration">maker.auto_command.make_migration</argument>
       </argument>
     </service>
-    <service id="service_locator.ohqmJ6T" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.02akXIo" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="console.command.about" type="service" id="console.command.about"/>
@@ -4232,6 +4426,7 @@
         <argument key="doctrine.database_drop_command" type="service" id="doctrine.database_drop_command"/>
         <argument key="doctrine.database_import_command" type="service" id="doctrine.database_import_command"/>
         <argument key="doctrine.ensure_production_settings_command" type="service" id="doctrine.ensure_production_settings_command"/>
+        <argument key="doctrine.fixtures_load_command" type="service" id="doctrine.fixtures_load_command"/>
         <argument key="doctrine.generate_entities_command" type="service" id="doctrine.generate_entities_command"/>
         <argument key="doctrine.mapping_convert_command" type="service" id="doctrine.mapping_convert_command"/>
         <argument key="doctrine.mapping_import_command" type="service" id="doctrine.mapping_import_command"/>
@@ -4287,9 +4482,10 @@
         <argument key="inline" type="service" id="fragment.renderer.inline"/>
       </argument>
     </service>
-    <service id="service_locator.nA6cUNd" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.ii_Jt3B" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Form\ListTaskType" type="service" id="App\Form\ListTaskType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service" id="form.type.entity"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service" id="form.type.choice"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="service" id="form.type.form"/>
@@ -4395,6 +4591,12 @@
       </call>
     </service>
     <service id="monolog.handler.null_internal" class="Monolog\Handler\NullHandler"/>
+    <service id="service_locator.cUlm9.s" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="App\Repository\ListTaskRepository" type="service" id="App\Repository\ListTaskRepository"/>
+      </argument>
+    </service>
     <service id="debug.validator.inner" class="Symfony\Component\Validator\Validator\ValidatorInterface" public="false">
       <factory service="validator.builder" method="getValidator"/>
     </service>
@@ -4629,6 +4831,7 @@
     <service id="Twig\Environment" alias="twig" public="false"/>
     <service id="sensio_framework_extra.converter.doctrine.orm.expression_language" alias="sensio_framework_extra.converter.doctrine.orm.expression_language.default" public="false"/>
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default" public="false"/>
+    <service id="Knp\Component\Pager\PaginatorInterface" alias="knp_paginator"/>
     <service id="console.command.public_alias.doctrine_cache.contains_command" alias="doctrine_cache.contains_command" public="true"/>
     <service id="console.command.public_alias.doctrine_cache.delete_command" alias="doctrine_cache.delete_command" public="true"/>
     <service id="console.command.public_alias.doctrine_cache.flush_command" alias="doctrine_cache.flush_command" public="true"/>

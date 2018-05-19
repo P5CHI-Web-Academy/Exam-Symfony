@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ListTask index{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <h3>My To-Do List</h3>
+        <div class="buttons">
+            <a  href="{{ path('list_task_new') }}" class="btn btn-primary">Create New</a>
+            <a  href="{{ path('list_task_import') }}" class="btn btn-secondary">Import</a>
+        </div>
+    </nav>
+
+    <table class="table">
+        <tbody>
+        {% for list_task in list_tasks_sort %}
+            <tr>
+                <td> {{ list_task.done ? '<button type="button" class="btn btn-outline-primary"><i class="fas fa-check"></i></button>' : '<button type="button" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>' }}</td>
+                <td>{{ list_task.title }}</td>
+                <td align="right">
+                    <a class="btn btn-outline-primary" href="{{ path('list_task_edit', {'id': list_task.id}) }}"><i class="fas fa-pencil-alt"></i></a>
+                    <a class="btn btn-outline-danger" href="{{ path('list_task_delete', {'id': list_task.id}) }}" onclick="return confirm('are u sure?')"><i class="fas fa-trash-alt"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation center">
+        {{ knp_pagination_render(list_tasks_sort) }}
+    </div>
+{% endblock %}

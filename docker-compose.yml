@@ -1,0 +1,39 @@
+version: "3.1"
+services:
+    mysql:
+        image: mysql:5.7
+        container_name: examamen-mysql
+        working_dir: /application
+        volumes:
+            - .:/application
+        environment:
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_DATABASE=examamen
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+        ports:
+            - 3306:3306
+
+    webserver:
+        image: nginx:alpine
+        container_name: examamen-webserver
+        working_dir: /application
+        volumes:
+            - .:/application
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - 80:80
+
+    php-fpm:
+        build: docker/php-fpm
+        container_name: examamen-php-fpm
+        working_dir: /application
+        volumes:
+            - .:/application
+            - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
+    frontend:
+        image: node:9.11.1
+        command: sh -c "npm i && npm run watch"
+        working_dir: /application
+        volumes:
+            - .:/application
