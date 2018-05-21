@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}To-Do list{% endblock %}
+
+{% block body %}
+
+    {% include 'task/table.html.twig' with {
+        'tasks': activeTasks,
+        'deleteForm': deleteForm,
+        'taskDoneForm': taskDoneForm
+    } only %}
+
+    <div class="navigation text-center">
+        {{ knp_pagination_render(activeTasks) }}
+    </div>
+
+{% endblock %}
