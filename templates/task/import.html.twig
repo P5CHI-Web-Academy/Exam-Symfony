@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import Task{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mt-3">{{ 'Import tasks'|trans }}</h1>
+
+    {{ form_start(form, {method: 'POST', action: url('task_import')}) }}
+    {{ form_widget(form) }}
+
+    <div class="form-group">
+        <button class="btn btn-primary pull-right" type="submit">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i> {{ 'Import'|trans }}
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}
