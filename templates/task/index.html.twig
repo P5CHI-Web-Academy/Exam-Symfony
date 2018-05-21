@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+    <h1>Task index</h1>
+
+    <table class="table">
+        <thead>
+        <tr class="active">
+            <th class="text-center col-md-2">Description</th>
+            <th class="text-center col-md-1">Priority</th>
+            <th class="text-center col-md-1">actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks|slice(0, max_tasks_on_homepage) %}
+            <tr>
+                {% if task.done %}
+                    <td class="text-center"><a class="glyphicon glyphicon-unchecked" href="{{ path('task_done', {'id': task.id}) }}"></a>{{ task.description }}</td>
+                {% else %}
+                    <td class="text-center"><a class="glyphicon glyphicon-check" href="{{ path('task_done', {'id': task.id}) }}"></a>{{ task.description }}</td>
+                {% endif %}
+                <td class="text-center">{{ task.priority }}</td>
+                <td class="text-center">
+                    <a  href="{{ path('task_show', {'id': task.id}) }}">show</a>
+            <a class="glyphicon glyphicon-pencil" href="{{ path('task_edit', {'id': task.id}) }}">edit</a>
+            </td>
+        </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation text-center">
+        {{ knp_pagination_render(tasks) }}
+    </div>
+
+{% endblock %}
